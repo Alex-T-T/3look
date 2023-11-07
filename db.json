@@ -1,0 +1,17 @@
+[
+    {
+        "id": "1",
+        "name": "Other",
+        "isActive": true
+    },
+    {
+        "id": "2",
+        "name": "Films",
+        "isActive": true
+    },
+    {
+        "id": "3",
+        "name": "NFT",
+        "isActive": false
+    }
+]
