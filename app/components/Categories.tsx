@@ -1,32 +1,56 @@
-import React from 'react';
+'use client';
 import CreateButton from './CreateButton';
 import Container from './Container';
 import CategoryList from './CategoryList';
+import Header from './Header';
+import { useEffect, useState } from 'react';
+import { getAllCategories } from '../helpers/getAllCategories';
+import { getCategoryByQuery } from '../helpers/getCategoryByQuery';
+import CreateInput from './CreateInput';
 
 export interface ICategory {
-    id: string;
+    id: number;
     name: string;
     isActive: boolean;
 }
 
-async function Categories() {
-    const data = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/categories`
-    ).then((res) => {
-        if (!res.ok) {
-            throw new Error(res.status.toString(), { cause: res });
-        }
-        return res;
-    });
+function Categories() {
+    const [categories, setCategories] = useState<ICategory[]>([]);
+    // const [isCreate, setIsCreate] = useState(false);
 
-    const categories: ICategory[] = await data.json();
+    useEffect(() => {
+        getAllCategories()
+            .then((res) => setCategories(res))
+            .catch((error) => console.log(error));
+    }, []);
+
+    const handleSearch = async (query: string) => {
+        getCategoryByQuery(query)
+            .then((res) => setCategories(res))
+            .catch((error) => console.log(error));
+    };
+
+    // const handleCreateClick = () => {
+    //     setIsCreate(true)
+    // }
 
     return (
         <>
-            <Container className="mt-[169px] tablet:mt-[113px]">
-                <CreateButton />
-                <CategoryList categories={categories} />
-            </Container>
+            <Header onSearch={handleSearch} />
+            <main className="relative">
+                <Container className="mt-[169px] tablet:mt-[113px]">
+                    <CreateButton />
+                    <CreateInput />
+                    {categories ? (
+                        <CategoryList
+                            setCategories={setCategories}
+                            categories={categories}
+                        />
+                    ) : (
+                        <p className="text-center">Loading...</p>
+                    )}
+                </Container>
+            </main>
         </>
     );
 }

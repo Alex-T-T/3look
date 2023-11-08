@@ -1,18 +1,26 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { ICategory } from './Categories';
 import CategoryItem from './CategoryItem';
+import { getAllCategories } from '../helpers/getAllCategories';
 
-function CategoryList({ categories }: { categories: ICategory[] }) {
-    const [categoryList, setCategoryList] = useState(categories);
+function CategoryList({
+    categories,
+    setCategories,
+}: {
+    categories: ICategory[];
+    setCategories: Dispatch<SetStateAction<ICategory[]>>;
+}) {
     const [isChange, setIsChange] = useState(false);
 
-    const handleStatusChange = (id: string, status: boolean) => {
-        const category = categoryList.find((category) => category.id === id);
+    const defaultCategories = categories;
+
+    const handleStatusChange = (id: number, status: boolean) => {
+        const category = categories.find((category) => category.id === id);
 
         if (category?.name.toLowerCase() === 'other') return;
 
-        setCategoryList((prev) => {
+        setCategories((prev) => {
             return prev.map((category) => {
                 if (category.id !== id) {
                     return category;
@@ -24,14 +32,34 @@ function CategoryList({ categories }: { categories: ICategory[] }) {
         setIsChange(true);
     };
 
+    const handleDelete = (id: number) => {
+        const category = categories.find((category) => category.id === id);
+
+        if (category?.name.toLowerCase() === 'other') return;
+
+        setCategories((prev) => {
+            const updatedCategoryList = prev.filter(
+                (category) => category.id !== id
+            );
+
+            if (updatedCategoryList.length === prev.length) {
+                alert('Category does not exist');
+                return prev;
+            }
+            return updatedCategoryList;
+        });
+        setIsChange(true);
+    };
+
     return (
         <>
-            {categoryList ? (
-                categoryList?.map((category: ICategory) => (
+            {categories ? (
+                categories?.map((category: ICategory) => (
                     <CategoryItem
                         key={category.id}
                         category={category}
                         onStatusChange={handleStatusChange}
+                        onDelete={handleDelete}
                     />
                 ))
             ) : (
@@ -79,7 +107,9 @@ function CategoryList({ categories }: { categories: ICategory[] }) {
                         type="button"
                         className="w-[306px] text-[16px] text-center bg-transparent border-[3px] border-cancel-btn py-4 rounded shadow-action-bt"
                         onClick={() => {
-                            setCategoryList(categories);
+                            getAllCategories()
+                                .then((res) => setCategories(res))
+                                .catch((error) => console.log(error));
                             setIsChange(false);
                         }}
                     >

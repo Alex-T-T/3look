@@ -1,14 +1,25 @@
 import { ICategory } from './Categories';
+import DeleteButton from './DeleteButton';
+import DragAndDrop from './DragAndDrop';
 import SwitchButton from './SwitchButton';
 
 interface ICategoryItemProps {
     category: ICategory;
-    onStatusChange: (id: string, isActive: boolean) => void;
+    onStatusChange: (id: number, isActive: boolean) => void;
+    onDelete: (id: number) => void;
 }
 
-function CategoryItem({ category, onStatusChange }: ICategoryItemProps) {
+function CategoryItem({
+    category,
+    onStatusChange,
+    onDelete,
+}: ICategoryItemProps) {
     const handleClick = () => {
         onStatusChange(category.id, category.isActive);
+    };
+
+    const handleDelete = () => {
+        onDelete(category.id);
     };
 
     return (
@@ -22,7 +33,14 @@ function CategoryItem({ category, onStatusChange }: ICategoryItemProps) {
             >
                 {category.name}
             </p>
-            <SwitchButton isActive={category.isActive} onChange={handleClick} />
+            <div className="flex items-center space-x-5">
+                <SwitchButton
+                    isActive={category.isActive}
+                    onChange={handleClick}
+                />
+                <DeleteButton onDelete={handleDelete} />
+                <DragAndDrop />
+            </div>
         </div>
     );
 }

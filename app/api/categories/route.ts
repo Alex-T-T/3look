@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
+import { ICategoryPost } from './type';
+import { ICategory } from '@/app/components/Categories';
+import { writeToDb } from '@/app/helpers/writeToDb';
+import { getDb } from '@/app/helpers/getDb';
 
-export const GET = async () => {
-    const file = await fs.readFile(process.cwd() + '/db.json', 'utf8');
+export const GET = async (req: NextRequest) => {
+    const file = await getDb();
 
     if (!file)
         return NextResponse.json(
@@ -10,15 +13,47 @@ export const GET = async () => {
             { status: 500 }
         );
 
-    const data = JSON.parse(file);
+    const data: ICategory[] = JSON.parse(file);
 
     if (!data)
         return NextResponse.json(
-            { message: 'Something went wrong! Database is demaged!' },
+            { message: 'Something went wrong! Database is corrupt!' },
             { status: 500 }
         );
 
-    return NextResponse.json(data);
+    const searchParams = req.nextUrl.searchParams;
+    const query = searchParams.get('query');
+
+    if (!query) {
+        return NextResponse.json(data);
+    }
+
+    const dataByQuery = data.filter((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    return NextResponse.json(dataByQuery);
 };
 
-export const POST = async () => {};
+export const POST = async (req: NextRequest) => {
+    const data: ICategoryPost = await req.json();
+
+    if (!data.name) {
+        return NextResponse.json(
+            { message: 'Required fields is missing!' },
+            { status: 400 }
+        );
+    }
+
+    const newData: ICategory = {
+        id: Date.now(),
+        name: data.name.toLowerCase(),
+        isActive: false,
+    };
+
+    await writeToDb(newData);
+
+    return NextResponse.json(
+        { message: 'Successfully created' },
+        { status: 201 }
+    );
+};
