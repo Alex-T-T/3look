@@ -5,14 +5,9 @@ import CategoryList from './CategoryList';
 import Header from './Header';
 import { useEffect, useState } from 'react';
 import { getAllCategories } from '../helpers/getAllCategories';
-import { getCategoryByQuery } from '../helpers/getCategoryByQuery';
+import { getCategoryByQuery } from '@/app/helpers/getCategoryByQuery';
 import CreateInput from './CreateInput';
-
-export interface ICategory {
-    id: number;
-    name: string;
-    isActive: boolean;
-}
+import { ICategory } from '@/app/api//categories/type';
 
 function Categories() {
     const [categories, setCategories] = useState<ICategory[]>([]);

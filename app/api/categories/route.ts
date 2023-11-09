@@ -1,26 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ICategoryPost } from './type';
-import { ICategory } from '@/app/components/Categories';
-import { writeToDb } from '@/app/helpers/writeToDb';
+import { ICategory, ICategoryPost } from '@/app/api/categories/type';
 
-import db from '@/db.json';
+import database from '@/app/database/database';
+import categories from '@/app/database/schema/categories/categorySchema';
+import categoryValidation from '@/app/database/schema/categories/categoryValidation';
 
 export const GET = async (req: NextRequest) => {
+    await database();
     const searchParams = req.nextUrl.searchParams;
     const query = searchParams.get('query');
 
     if (!query) {
-        return NextResponse.json(db);
+        const res = await categories.find({});
+
+        return NextResponse.json(res);
     }
 
-    const dataByQuery = db.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
-    );
+    const regexPattern = new RegExp(query.split('').join('.*'), 'i');
+
+    const dataByQuery = await categories.find({
+        name: { $regex: regexPattern },
+    });
+
     return NextResponse.json(dataByQuery);
 };
 
 export const POST = async (req: NextRequest) => {
-    const data: ICategoryPost = await req.json();
+    await database();
+    const data: ICategory = await req.json();
 
     if (!data.name) {
         return NextResponse.json(
@@ -29,16 +36,40 @@ export const POST = async (req: NextRequest) => {
         );
     }
 
-    const newData: ICategory = {
-        id: Date.now(),
+    const newData: ICategoryPost = {
         name: data.name.toLowerCase(),
         isActive: false,
     };
 
-    await writeToDb(newData);
+    const validBody = categoryValidation.safeParse(newData);
 
-    return NextResponse.json(
-        { message: 'Successfully created' },
-        { status: 201 }
-    );
+    const isExistingData = await categories.findOne({ name: newData.name });
+
+    if (isExistingData) {
+        return NextResponse.json(
+            {
+                message: `Category with name ${newData.name.toUpperCase()} alredy exist.`,
+            },
+            { status: 400 }
+        );
+    }
+
+    if (!validBody.success) {
+        return NextResponse.json(validBody.error.issues, { status: 400 });
+    }
+
+    try {
+        await categories.create(validBody.data);
+
+        return NextResponse.json(
+            { message: 'Successfully created' },
+            { status: 201 }
+        );
+    } catch (error) {
+        console.log('error: ', error);
+        return NextResponse.json(
+            { message: 'Something went wrong' },
+            { status: 400 }
+        );
+    }
 };

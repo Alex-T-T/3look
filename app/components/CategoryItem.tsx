@@ -1,12 +1,14 @@
-import { ICategory } from './Categories';
+import mongoose from 'mongoose';
+import { ICategory } from '@/app/api//categories/type';
+
 import DeleteButton from './DeleteButton';
 import DragAndDrop from './DragAndDrop';
 import SwitchButton from './SwitchButton';
 
 interface ICategoryItemProps {
     category: ICategory;
-    onStatusChange: (id: number, isActive: boolean) => void;
-    onDelete: (id: number) => void;
+    onStatusChange: (id: mongoose.Types.ObjectId, isActive: boolean) => void;
+    onDelete: (id: mongoose.Types.ObjectId) => void;
 }
 
 function CategoryItem({
@@ -15,11 +17,11 @@ function CategoryItem({
     onDelete,
 }: ICategoryItemProps) {
     const handleClick = () => {
-        onStatusChange(category.id, category.isActive);
+        onStatusChange(category._id, category.isActive);
     };
 
     const handleDelete = () => {
-        onDelete(category.id);
+        onDelete(category._id);
     };
 
     return (

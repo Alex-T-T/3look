@@ -1,8 +1,9 @@
 'use client';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { ICategory } from './Categories';
+import { ICategory } from '@/app/api/categories/type';
 import CategoryItem from './CategoryItem';
 import { getAllCategories } from '../helpers/getAllCategories';
+import mongoose from 'mongoose';
 
 function CategoryList({
     categories,
@@ -15,14 +16,17 @@ function CategoryList({
 
     const defaultCategories = categories;
 
-    const handleStatusChange = (id: number, status: boolean) => {
-        const category = categories.find((category) => category.id === id);
+    const handleStatusChange = (
+        id: mongoose.Types.ObjectId,
+        status: boolean
+    ) => {
+        const category = categories.find((category) => category._id === id);
 
         if (category?.name.toLowerCase() === 'other') return;
 
         setCategories((prev) => {
             return prev.map((category) => {
-                if (category.id !== id) {
+                if (category._id !== id) {
                     return category;
                 }
 
@@ -32,14 +36,14 @@ function CategoryList({
         setIsChange(true);
     };
 
-    const handleDelete = (id: number) => {
-        const category = categories.find((category) => category.id === id);
+    const handleDelete = (id: mongoose.Types.ObjectId) => {
+        const category = categories.find((category) => category._id === id);
 
         if (category?.name.toLowerCase() === 'other') return;
 
         setCategories((prev) => {
             const updatedCategoryList = prev.filter(
-                (category) => category.id !== id
+                (category) => category._id !== id
             );
 
             if (updatedCategoryList.length === prev.length) {
@@ -56,7 +60,7 @@ function CategoryList({
             {categories ? (
                 categories?.map((category: ICategory) => (
                     <CategoryItem
-                        key={category.id}
+                        key={category._id.toString()}
                         category={category}
                         onStatusChange={handleStatusChange}
                         onDelete={handleDelete}

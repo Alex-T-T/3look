@@ -5,6 +5,6 @@ export const getCategoryByQuery = async (query: string) => {
     if (!res.ok) {
         throw new Error(res.status.toString(), { cause: res });
     }
-    const res_1 = res;
-    return await res_1.json();
+
+    return await res.json();
 };

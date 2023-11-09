@@ -1,5 +1,7 @@
 import Categories from './components/Categories';
+import database from './database/database';
 
-export default function Home() {
+export default async function Home() {
+    await database();
     return <Categories />;
 }

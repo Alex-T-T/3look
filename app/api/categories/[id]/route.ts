@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ICategoryUpdate } from '../type';
-import { updateDb } from '@/app/helpers/updateDb';
-import { removeFromDb } from '@/app/helpers/removeFromDb';
 
-import db from '@/db.json';
+import mongoose from 'mongoose';
+
+import database from '@/app/database/database';
+import categories from '@/app/database/schema/categories/categorySchema';
 
 export const GET = async (
     req: NextRequest,
@@ -15,15 +16,15 @@ export const GET = async (
         };
     }
 ) => {
-    if (!params.id) {
-        return NextResponse.json({ message: 'Not found' }, { status: 404 });
+    await database();
+    if (!params.id || !mongoose.Types.ObjectId.isValid(params.id)) {
+        return NextResponse.json(
+            { message: 'Category id is not valid ObjectId' },
+            { status: 404 }
+        );
     }
 
-    const category = db.find((item) => {
-        if (item.id === +params.id) {
-            return item;
-        }
-    });
+    const category = await categories.findById(params.id);
 
     if (!category) {
         return NextResponse.json({ message: 'Not Found' }, { status: 404 });
@@ -44,15 +45,22 @@ export const PATCH = async (
 ) => {
     const data: ICategoryUpdate = await req.json();
 
-    if (!data.name && !data.isActive) {
+    if (!params.id || !mongoose.Types.ObjectId.isValid(params.id)) {
         return NextResponse.json(
-            { message: 'Empty fields is not allowed!' },
+            { message: 'Category id is not valid ObjectId' },
+            { status: 404 }
+        );
+    }
+
+    if (!data.name && typeof data.isActive !== 'boolean') {
+        return NextResponse.json(
+            { message: 'All empty fields is not allowed!' },
             { status: 400 }
         );
     }
 
     try {
-        await updateDb(data, +params.id);
+        await categories.findOneAndUpdate({ _id: params.id }, { $set: data });
     } catch (error) {
         return NextResponse.json(
             { error: 'This item does not exist at Database' },
@@ -76,21 +84,22 @@ export const DELETE = async (
         };
     }
 ) => {
-    if (!params.id) {
-        return NextResponse.json({ message: 'Not found' }, { status: 404 });
-    }
-
-    try {
-        await removeFromDb(+params.id);
-    } catch (error) {
+    await database();
+    if (!params.id || !mongoose.Types.ObjectId.isValid(params.id)) {
         return NextResponse.json(
-            { error: 'This item does not exist at Database' },
+            { message: 'Category id is not valid ObjectId' },
             { status: 404 }
         );
     }
 
-    return NextResponse.json(
-        { message: 'Successfully deleted' },
-        { status: 200 }
-    );
+    try {
+        await categories.findByIdAndDelete(params.id);
+
+        return NextResponse.json(
+            { message: 'Successfully deleted' },
+            { status: 200 }
+        );
+    } catch (error) {
+        return NextResponse.json({ error }, { status: 500 });
+    }
 };
