@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ICategoryUpdate } from '../type';
 import { updateDb } from '@/app/helpers/updateDb';
-import { getDb } from '@/app/helpers/getDb';
-import { ICategory } from '@/app/components/Categories';
-import { error } from 'console';
 import { removeFromDb } from '@/app/helpers/removeFromDb';
+
+import db from '@/db.json';
 
 export const GET = async (
     req: NextRequest,
@@ -20,23 +19,7 @@ export const GET = async (
         return NextResponse.json({ message: 'Not found' }, { status: 404 });
     }
 
-    const file = await getDb();
-
-    if (!file)
-        return NextResponse.json(
-            { message: 'Something went wrong! Database is sleeping' },
-            { status: 500 }
-        );
-
-    const data: ICategory[] = JSON.parse(file);
-
-    if (!data)
-        return NextResponse.json(
-            { message: 'Something went wrong! Database is corrupt!' },
-            { status: 500 }
-        );
-
-    const category = data.find((item) => {
+    const category = db.find((item) => {
         if (item.id === +params.id) {
             return item;
         }

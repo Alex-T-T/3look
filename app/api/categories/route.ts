@@ -2,33 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ICategoryPost } from './type';
 import { ICategory } from '@/app/components/Categories';
 import { writeToDb } from '@/app/helpers/writeToDb';
-import { getDb } from '@/app/helpers/getDb';
 
 import db from '@/db.json';
 
 export const GET = async (req: NextRequest) => {
-    // const file = await getDb();
-
-    // if (!file)
-    //     return NextResponse.json(
-    //         { message: 'Something went wrong! Database is sleeping' },
-    //         { status: 500 }
-    //     );
-
-    // const data: ICategory[] = JSON.parse(file);
-
-    // if (!data)
-    //     return NextResponse.json(
-    //         { message: 'Something went wrong! Database is corrupt!' },
-    //         { status: 500 }
-    //     );
-
     const searchParams = req.nextUrl.searchParams;
     const query = searchParams.get('query');
-
-    // if (!query) {
-    //     return NextResponse.json(data);
-    // }
 
     if (!query) {
         return NextResponse.json(db);
