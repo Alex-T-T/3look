@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    distDir: 'dist',
     experimental: {
         outputFileTracingRoot: './db.json',
         webpackBuildWorker: true
