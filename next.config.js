@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    experimental: {
+        outputFileTracingRoot: path.join(__dirname, './db.json'),
+    },
     webpack: config => {
         config.module.rules.push({
             test: /\.svg$/,
