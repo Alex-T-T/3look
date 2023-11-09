@@ -2,6 +2,7 @@
 const nextConfig = {
     experimental: {
         outputFileTracingRoot: './db.json',
+        webpackBuildWorker: true
     },
     webpack: config => {
         config.module.rules.push({
