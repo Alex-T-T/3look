@@ -2,10 +2,7 @@ const fs = require('fs').promises;
 
 export async function writeToDb(data: any) {
     try {
-        const existingData = await fs.readFile(
-            process.cwd() + '/db.json',
-            'utf8'
-        );
+        const existingData = await fs.readFile('db.json', 'utf8');
 
         const dataArray = JSON.parse(existingData);
 

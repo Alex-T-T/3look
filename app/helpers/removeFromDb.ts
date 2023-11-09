@@ -4,10 +4,7 @@ const fs = require('fs').promises;
 
 export async function removeFromDb(id: number) {
     try {
-        const existingData = await fs.readFile(
-            process.cwd() + '/db.json',
-            'utf8'
-        );
+        const existingData = await fs.readFile('db.json', 'utf8');
 
         const dataArray: ICategory[] = JSON.parse(existingData);
 
