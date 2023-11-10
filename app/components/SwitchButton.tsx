@@ -1,6 +1,6 @@
 interface ISwitchButtonProps {
-    isActive: boolean;
-    onChange: () => void;
+    isActive?: boolean;
+    onChange?: () => void;
     className?: string;
 }
 
@@ -13,7 +13,7 @@ function SwitchButton({
         <>
             {isActive ? (
                 <div
-                    className={`w-[47px] flex items-center justify-between px-[8px] py-[7px] bg-switch-on-bg border border-transparent rounded-[99px] hover:scale-125 focus:scale-125 ${className}`}
+                    className={`w-[47px] flex items-center justify-between px-[8px] py-[7px] bg-switch-on-bg border border-transparent rounded-[99px] hover:scale-125 focus:scale-125 ease-linear duration-300 ${className}`}
                     onClick={onChange}
                 >
                     <p className=" text-on text-[11px] font-bold mr-1">On</p>
@@ -29,7 +29,7 @@ function SwitchButton({
                 </div>
             ) : (
                 <div
-                    className={`w-[47px] flex items-center justify-between px-[8px] py-[7px] bg-switch-off-bg border border-transparent rounded-[99px] hover:scale-125 focus:scale-125 ${className}`}
+                    className={`w-[47px] flex items-center justify-between px-[8px] py-[7px] bg-switch-off-bg border border-transparent rounded-[99px] hover:scale-125 focus:scale-125 ease-linear duration-300 ${className}`}
                     onClick={onChange}
                 >
                     {' '}

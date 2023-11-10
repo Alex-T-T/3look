@@ -6,5 +6,7 @@ export const getCategoryByQuery = async (query: string) => {
         throw new Error(res.status.toString(), { cause: res });
     }
 
-    return await res.json();
+    const categories = await res.json();
+    const reversedCategories = categories.toReversed();
+    return reversedCategories;
 };

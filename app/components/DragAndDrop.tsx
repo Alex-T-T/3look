@@ -6,7 +6,7 @@ function DragAndDrop() {
             height="14"
             viewBox="0 0 8 14"
             fill="none"
-            className="hover:scale-125 focus:scale-125"
+            className="hover:scale-125 focus:scale-125 ease-linear duration-300"
         >
             <g opacity="0.5">
                 <path

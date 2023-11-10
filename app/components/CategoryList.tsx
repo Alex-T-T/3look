@@ -14,16 +14,10 @@ function CategoryList({
 }) {
     const [isChange, setIsChange] = useState(false);
 
-    const defaultCategories = categories;
-
     const handleStatusChange = (
         id: mongoose.Types.ObjectId,
         status: boolean
     ) => {
-        const category = categories.find((category) => category._id === id);
-
-        if (category?.name.toLowerCase() === 'other') return;
-
         setCategories((prev) => {
             return prev.map((category) => {
                 if (category._id !== id) {
@@ -70,10 +64,10 @@ function CategoryList({
                 <p>Loading...</p>
             )}
             {isChange && (
-                <div className="mx-auto flex items-center justify-center bg-main-bg z-50">
+                <div className="mx-auto flex items-center justify-center bg-main-bg z-50 fixed bottom-5 left-0 right-0">
                     <button
                         type="submit"
-                        className="w-[306px] flex items-center justify-center border border-transparent rounded bg-save-btn py-4 shadow-action-btn text-[16px] mr-[26px]"
+                        className="w-[306px] flex items-center justify-center border border-transparent rounded bg-save-btn py-4 shadow-action-btn text-[16px] mr-[26px] hover:scale-105 focus:scale-105 ease-linear duration-300"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +103,7 @@ function CategoryList({
                     </button>
                     <button
                         type="button"
-                        className="w-[306px] text-[16px] text-center bg-transparent border-[3px] border-cancel-btn py-4 rounded shadow-action-bt"
+                        className="w-[306px] text-[16px] text-center bg-transparent border-[3px] border-cancel-btn py-4 rounded shadow-action-bt hover:scale-105 focus:scale-105 ease-linear duration-300"
                         onClick={() => {
                             getAllCategories()
                                 .then((res) => setCategories(res))

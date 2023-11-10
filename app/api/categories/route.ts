@@ -26,8 +26,10 @@ export const GET = async (req: NextRequest) => {
 };
 
 export const POST = async (req: NextRequest) => {
+    console.log('req: ', req);
     await database();
     const data: ICategory = await req.json();
+    console.log('data: ', data);
 
     if (!data.name) {
         return NextResponse.json(
@@ -59,12 +61,9 @@ export const POST = async (req: NextRequest) => {
     }
 
     try {
-        await categories.create(validBody.data);
+        const res = await categories.create(validBody.data);
 
-        return NextResponse.json(
-            { message: 'Successfully created' },
-            { status: 201 }
-        );
+        return NextResponse.json(res, { status: 201 });
     } catch (error) {
         console.log('error: ', error);
         return NextResponse.json(

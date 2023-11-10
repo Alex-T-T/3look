@@ -7,8 +7,9 @@ export const getAllCategories = async () => {
         if (!res.ok) {
             throw new Error(res.status.toString(), { cause: res });
         }
-
-        return await res.json();
+        const categories = await res.json();
+        const reversedCategories = categories.toReversed();
+        return reversedCategories;
     } catch (error) {
         return console.log(error);
     }

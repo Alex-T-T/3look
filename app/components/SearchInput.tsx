@@ -9,7 +9,7 @@ function SearchInput({ onSearch }: { onSearch: (query: string) => void }) {
     return (
         <div className="relative">
             <input
-                className="py-[15px] px-[20px] w-[240px] mobile-l:w-[380px] border border-transparent rounded bg-[#30313C] placeholder:text-text-second placeholder:text-[14px]"
+                className="py-[15px] px-[20px] w-[240px] mobile-l:w-[380px] border border-transparent rounded bg-[#30313C] placeholder:text-text-second placeholder:text-[14px] outline-none"
                 placeholder="Search"
                 type="text"
                 onChange={(event) => handleSearch(event.target.value)}
