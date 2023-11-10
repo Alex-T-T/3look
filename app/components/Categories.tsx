@@ -42,7 +42,9 @@ function Categories() {
         }
 
         try {
-            await createCategory(inputCreateRef.current);
+            const newCategory = await createCategory(inputCreateRef.current);
+            setCategories((prev) => [newCategory, ...prev]);
+
             inputCreateRef.current = '';
             toast.success('New category successfully created');
         } catch (error) {
