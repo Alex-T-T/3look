@@ -14,10 +14,16 @@ import { getCategoryByQuery } from '@/app/helpers/getCategoryByQuery';
 import CreateInput from './CreateInput';
 import { ICategory } from '@/app/api//categories/type';
 import { createCategory } from '../helpers/createCategory';
+import mongoose from 'mongoose';
+import { saveChangesToDb } from '../helpers/saveChangesToDb';
 
 function Categories() {
     const [categories, setCategories] = useState<ICategory[]>([]);
     const [inputValue, setInputValue] = useState('');
+    const [updatedCategories, setUpdatedCategories] = useState<ICategory[]>([]);
+    const [deletedCategoryIds, setDeletedCategoryIds] = useState<
+        mongoose.Types.ObjectId[]
+    >([]);
 
     useEffect(() => {
         getAllCategories()
@@ -52,6 +58,44 @@ function Categories() {
         }
     };
 
+    const handleUpdate = (id: mongoose.Types.ObjectId, status: boolean) => {
+        setCategories((prev) => {
+            return prev.map((category) => {
+                return category._id !== id
+                    ? category
+                    : { ...category, isActive: !status };
+            });
+        });
+
+        const updatedCategory = categories.find(
+            (category) => category._id === id
+        ) as ICategory;
+
+        setUpdatedCategories((prev) => [
+            ...prev,
+            { ...updatedCategory, isActive: !status },
+        ]);
+    };
+
+    const handleDelete = (id: mongoose.Types.ObjectId) => {
+        setCategories((prev) => prev.filter((category) => category._id !== id));
+
+        setDeletedCategoryIds((prev) => [...prev, id]);
+    };
+
+    const handleSaveChanges = async () => {
+        try {
+            await saveChangesToDb(updatedCategories, deletedCategoryIds);
+
+            setUpdatedCategories([]);
+            setDeletedCategoryIds([]);
+
+            toast.success('Changes saved successfully');
+        } catch (error) {
+            console.error('Error saving changes:', error);
+        }
+    };
+
     return (
         <>
             <Header onSearch={handleSearch} />
@@ -67,6 +111,9 @@ function Categories() {
                         <CategoryList
                             setCategories={setCategories}
                             categories={categories}
+                            onUpdate={handleUpdate}
+                            onDelete={handleDelete}
+                            onSave={handleSaveChanges}
                         />
                     ) : (
                         <p className="text-center">Loading...</p>

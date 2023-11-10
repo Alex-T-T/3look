@@ -5,28 +5,28 @@ import CategoryItem from './CategoryItem';
 import { getAllCategories } from '../helpers/getAllCategories';
 import mongoose from 'mongoose';
 
+interface ICategoryProps {
+    categories: ICategory[];
+    setCategories: Dispatch<SetStateAction<ICategory[]>>;
+    onUpdate: (id: mongoose.Types.ObjectId, status: boolean) => void;
+    onDelete: (id: mongoose.Types.ObjectId) => void;
+    onSave: () => void;
+}
+
 function CategoryList({
     categories,
     setCategories,
-}: {
-    categories: ICategory[];
-    setCategories: Dispatch<SetStateAction<ICategory[]>>;
-}) {
+    onUpdate,
+    onDelete,
+    onSave,
+}: ICategoryProps) {
     const [isChange, setIsChange] = useState(false);
 
     const handleStatusChange = (
         id: mongoose.Types.ObjectId,
         status: boolean
     ) => {
-        setCategories((prev) => {
-            return prev.map((category) => {
-                if (category._id !== id) {
-                    return category;
-                }
-
-                return { ...category, isActive: !status };
-            });
-        });
+        onUpdate(id, status);
         setIsChange(true);
     };
 
@@ -35,17 +35,7 @@ function CategoryList({
 
         if (category?.name.toLowerCase() === 'other') return;
 
-        setCategories((prev) => {
-            const updatedCategoryList = prev.filter(
-                (category) => category._id !== id
-            );
-
-            if (updatedCategoryList.length === prev.length) {
-                alert('Category does not exist');
-                return prev;
-            }
-            return updatedCategoryList;
-        });
+        onDelete(id);
         setIsChange(true);
     };
 
@@ -68,6 +58,10 @@ function CategoryList({
                     <button
                         type="submit"
                         className="w-[306px] flex items-center justify-center border border-transparent rounded bg-save-btn py-4 shadow-action-btn text-[16px] mr-[26px] hover:scale-105 focus:scale-105 ease-linear duration-300"
+                        onClick={() => {
+                            onSave();
+                            setIsChange(false);
+                        }}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
