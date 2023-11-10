@@ -11,6 +11,10 @@ interface ICategoryProps {
     onUpdate: (id: mongoose.Types.ObjectId, status: boolean) => void;
     onDelete: (id: mongoose.Types.ObjectId) => void;
     onSave: () => void;
+    setDeletedCategoryIds: (
+        value: SetStateAction<mongoose.Types.ObjectId[]>
+    ) => void;
+    setUpdatedCategories: (value: SetStateAction<ICategory[]>) => void;
 }
 
 function CategoryList({
@@ -19,6 +23,8 @@ function CategoryList({
     onUpdate,
     onDelete,
     onSave,
+    setDeletedCategoryIds,
+    setUpdatedCategories,
 }: ICategoryProps) {
     const [isChange, setIsChange] = useState(false);
 
@@ -102,6 +108,8 @@ function CategoryList({
                             getAllCategories()
                                 .then((res) => setCategories(res))
                                 .catch((error) => console.log(error));
+                            setDeletedCategoryIds([]);
+                            setUpdatedCategories([]);
                             setIsChange(false);
                         }}
                     >

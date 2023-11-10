@@ -67,14 +67,20 @@ function Categories() {
             });
         });
 
-        const updatedCategory = categories.find(
+        const categoryToUpdate = categories.find(
             (category) => category._id === id
         ) as ICategory;
 
-        setUpdatedCategories((prev) => [
-            ...prev,
-            { ...updatedCategory, isActive: !status },
-        ]);
+        setUpdatedCategories((prev) => {
+            const index = prev.findIndex((category) => category._id === id);
+
+            if (index === -1) {
+                return [...prev, { ...categoryToUpdate, isActive: !status }];
+            }
+
+            prev[index] = { ...categoryToUpdate, isActive: !status };
+            return prev;
+        });
     };
 
     const handleDelete = (id: mongoose.Types.ObjectId) => {
@@ -84,6 +90,11 @@ function Categories() {
     };
 
     const handleSaveChanges = async () => {
+        if (!updatedCategories.length && !deletedCategoryIds) {
+            toast.info('Nothing to save!');
+            return;
+        }
+
         try {
             await saveChangesToDb(updatedCategories, deletedCategoryIds);
 
@@ -114,6 +125,8 @@ function Categories() {
                             onUpdate={handleUpdate}
                             onDelete={handleDelete}
                             onSave={handleSaveChanges}
+                            setUpdatedCategories={setUpdatedCategories}
+                            setDeletedCategoryIds={setDeletedCategoryIds}
                         />
                     ) : (
                         <p className="text-center">Loading...</p>
