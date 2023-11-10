@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,7 +17,7 @@ import { createCategory } from '../helpers/createCategory';
 
 function Categories() {
     const [categories, setCategories] = useState<ICategory[]>([]);
-    const inputCreateRef = useRef('');
+    const [inputValue, setInputValue] = useState('');
 
     useEffect(() => {
         getAllCategories()
@@ -32,20 +32,20 @@ function Categories() {
     };
 
     const handleInputCreateChange = (value: string) => {
-        inputCreateRef.current = value;
+        setInputValue(value);
     };
 
     const handleCreate = async () => {
-        if (!inputCreateRef.current || inputCreateRef.current.length < 2) {
+        if (!inputValue || inputValue.length < 2) {
             toast.error('Not correct name. Try again!');
             return;
         }
 
         try {
-            const newCategory = await createCategory(inputCreateRef.current);
+            const newCategory = await createCategory(inputValue);
             setCategories((prev) => [newCategory, ...prev]);
 
-            inputCreateRef.current = '';
+            setInputValue('');
             toast.success('New category successfully created');
         } catch (error) {
             console.log(error);
@@ -58,7 +58,10 @@ function Categories() {
             <main className="relative">
                 <Container className="mt-[169px] tablet:mt-[113px]">
                     <CreateButton handleCreate={handleCreate} />
-                    <CreateInput onChange={handleInputCreateChange} />
+                    <CreateInput
+                        onChange={handleInputCreateChange}
+                        value={inputValue}
+                    />
 
                     {categories ? (
                         <CategoryList

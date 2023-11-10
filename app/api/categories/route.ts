@@ -26,10 +26,8 @@ export const GET = async (req: NextRequest) => {
 };
 
 export const POST = async (req: NextRequest) => {
-    console.log('req: ', req);
     await database();
     const data: ICategory = await req.json();
-    console.log('data: ', data);
 
     if (!data.name) {
         return NextResponse.json(
