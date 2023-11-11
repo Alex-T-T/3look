@@ -19,6 +19,7 @@ import { saveChangesToDb } from '../helpers/saveChangesToDb';
 
 function Categories() {
     const [categories, setCategories] = useState<ICategory[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [updatedCategories, setUpdatedCategories] = useState<ICategory[]>([]);
     const [deletedCategoryIds, setDeletedCategoryIds] = useState<
@@ -26,9 +27,13 @@ function Categories() {
     >([]);
 
     useEffect(() => {
+        setIsLoading(true);
         getAllCategories()
-            .then((res) => setCategories(res))
-            .catch((error) => console.log(error));
+            .then((res) => {
+                setCategories(res);
+            })
+            .catch((error) => console.log(error))
+            .finally(() => setIsLoading(false));
     }, []);
 
     const handleSearch = async (query: string) => {
@@ -118,7 +123,7 @@ function Categories() {
                         value={inputValue}
                     />
 
-                    {categories ? (
+                    {categories && (
                         <CategoryList
                             setCategories={setCategories}
                             categories={categories}
@@ -128,9 +133,8 @@ function Categories() {
                             setUpdatedCategories={setUpdatedCategories}
                             setDeletedCategoryIds={setDeletedCategoryIds}
                         />
-                    ) : (
-                        <p className="text-center">Loading...</p>
                     )}
+                    {isLoading && <p className="text-center">Loading...</p>}
                 </Container>
                 <ToastContainer
                     position="top-right"
