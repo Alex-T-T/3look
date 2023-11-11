@@ -59,7 +59,11 @@ function Categories() {
             setInputValue('');
             toast.success('New category successfully created');
         } catch (error) {
-            console.log(error);
+            if (error && typeof error === 'object' && 'cause' in error) {
+                toast.error((error as { cause: string }).cause);
+            } else {
+                console.error(error);
+            }
         }
     };
 
@@ -89,6 +93,7 @@ function Categories() {
     };
 
     const handleDelete = (id: mongoose.Types.ObjectId) => {
+        console.log('handleDelete at Categories: ');
         setCategories((prev) => prev.filter((category) => category._id !== id));
 
         setDeletedCategoryIds((prev) => [...prev, id]);

@@ -60,10 +60,10 @@ function CategoryList({
                 <p>Loading...</p>
             )}
             {isChange && (
-                <div className="mx-auto flex items-center justify-center bg-main-bg z-50 fixed bottom-5 left-0 right-0">
+                <div className="mx-auto flex flex-col tablet:flex-row items-center justify-center bg-main-bg z-50 fixed bottom-5 left-0 right-0">
                     <button
                         type="submit"
-                        className="w-[306px] flex items-center justify-center border border-transparent rounded bg-save-btn py-4 shadow-action-btn text-[16px] mr-[26px] hover:scale-105 focus:scale-105 ease-linear duration-300"
+                        className="w-[306px] flex items-center justify-center border border-transparent rounded bg-save-btn py-4 shadow-action-btn text-[16px] mb-2 tablet:mb-0 tablet:mr-[26px] hover:scale-105 focus:scale-105 ease-linear duration-300"
                         onClick={() => {
                             onSave();
                             setIsChange(false);

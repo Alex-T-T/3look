@@ -1,3 +1,5 @@
+import { error } from 'console';
+
 export const createCategory = async (value: string) => {
     const requestOptions = {
         method: 'POST',
@@ -10,7 +12,7 @@ export const createCategory = async (value: string) => {
         requestOptions
     ).then((res) => {
         if (!res.ok) {
-            throw new Error(res.status.toString(), { cause: res });
+            throw new Error(res.status.toString(), { cause: res.statusText });
         }
         return res.json();
     });

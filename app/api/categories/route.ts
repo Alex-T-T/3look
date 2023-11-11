@@ -50,7 +50,10 @@ export const POST = async (req: NextRequest) => {
             {
                 message: `Category with name ${newData.name.toUpperCase()} alredy exist.`,
             },
-            { status: 400 }
+            {
+                status: 400,
+                statusText: `Category with name ${newData.name.toUpperCase()} alredy exist.`,
+            }
         );
     }
 
