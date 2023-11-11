@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Reorder, useDragControls } from 'framer-motion';
 import { ICategory } from '@/app/api//categories/type';
 
 import DeleteButton from './DeleteButton';
@@ -16,6 +17,8 @@ function CategoryItem({
     onStatusChange,
     onDelete,
 }: ICategoryItemProps) {
+    const controls = useDragControls();
+
     const handleClick = () => {
         onStatusChange(category._id, category.isActive);
     };
@@ -25,7 +28,16 @@ function CategoryItem({
     };
 
     return (
-        <div className=" w-[240px] mobile-l:w-[380px] tablet:w-[638px] mx-auto border-2 border-list-item-border rounded bg-list-item py-3 px-5 flex flex-row items-center justify-between mb-3 last:mb-0 hover:scale-105 focus:scale-105 ease-linear duration-300">
+        <Reorder.Item
+            value={category}
+            whileDrag={{ scale: 1.1 }}
+            dragListener={false}
+            dragControls={controls}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className=" w-[240px] mobile-l:w-[380px] tablet:w-[638px] mx-auto border-2 border-list-item-border rounded bg-list-item py-3 px-5 flex flex-row items-center justify-between mb-3 last:mb-0 ease-linear duration-300"
+        >
             <p
                 className={
                     category.isActive
@@ -43,7 +55,12 @@ function CategoryItem({
                 {category.name !== 'other' ? (
                     <>
                         <DeleteButton onDelete={handleDelete} />
-                        <DragAndDrop />
+                        <div
+                            className="reorder-handle"
+                            onPointerDown={(e) => controls.start(e)}
+                        >
+                            <DragAndDrop />
+                        </div>
                     </>
                 ) : (
                     <>
@@ -51,7 +68,7 @@ function CategoryItem({
                     </>
                 )}
             </div>
-        </div>
+        </Reorder.Item>
     );
 }
 

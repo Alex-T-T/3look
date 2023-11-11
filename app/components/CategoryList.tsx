@@ -4,6 +4,7 @@ import { ICategory } from '@/app/api/categories/type';
 import CategoryItem from './CategoryItem';
 import { getAllCategories } from '../helpers/getAllCategories';
 import mongoose from 'mongoose';
+import { AnimatePresence, Reorder } from 'framer-motion';
 
 interface ICategoryProps {
     categories: ICategory[];
@@ -45,17 +46,29 @@ function CategoryList({
         setIsChange(true);
     };
 
+    // const filteredCategories = categories.filter(
+    //     (category) => category.name.toLowerCase() !== 'other'
+    // );
+
     return (
         <>
             {categories ? (
-                categories?.map((category: ICategory) => (
-                    <CategoryItem
-                        key={category._id.toString()}
-                        category={category}
-                        onStatusChange={handleStatusChange}
-                        onDelete={handleDelete}
-                    />
-                ))
+                <Reorder.Group
+                    axis="y"
+                    values={categories}
+                    onReorder={setCategories}
+                >
+                    <AnimatePresence>
+                        {categories?.map((category: ICategory) => (
+                            <CategoryItem
+                                key={category._id.toString()}
+                                category={category}
+                                onStatusChange={handleStatusChange}
+                                onDelete={handleDelete}
+                            />
+                        ))}
+                    </AnimatePresence>
+                </Reorder.Group>
             ) : (
                 <p>Loading...</p>
             )}

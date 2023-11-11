@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/lodash.debounce": "^4.0.9",
+    "framer-motion": "^10.16.4",
     "lodash.debounce": "^4.0.8",
     "mongoose": "^8.0.0",
     "next": "14.0.1",
