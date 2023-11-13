@@ -1,4 +1,4 @@
-import { ChangeEvent, LegacyRef, MutableRefObject } from 'react';
+import { ChangeEvent } from 'react';
 import DeleteButton from './DeleteButton';
 import DragAndDrop from './DragAndDrop';
 import SwitchButton from './SwitchButton';

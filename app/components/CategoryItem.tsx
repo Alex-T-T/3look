@@ -1,16 +1,19 @@
-import mongoose from 'mongoose';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import mongoose from 'mongoose';
 
-import { ICategory } from '@/app/api//categories/type';
+import { ICategory } from '@/app/api/categories/type';
 import DeleteButton from './DeleteButton';
 import DragAndDrop from './DragAndDrop';
 import SwitchButton from './SwitchButton';
+import Dialog from './Dialog';
 
 interface ICategoryItemProps {
     category: ICategory;
     onStatusChange: (id: mongoose.Types.ObjectId, isActive: boolean) => void;
     onDelete: (id: mongoose.Types.ObjectId) => void;
     index: number;
+    setIsChange: Dispatch<SetStateAction<boolean>>;
 }
 
 function CategoryItem({
@@ -18,7 +21,10 @@ function CategoryItem({
     onStatusChange,
     onDelete,
     index,
+    setIsChange,
 }: ICategoryItemProps) {
+    const [isDialog, setIsDialog] = useState(false);
+
     const handleClick = () => {
         onStatusChange(category._id, category.isActive);
     };
@@ -53,7 +59,9 @@ function CategoryItem({
                                 />
                                 {category.name !== 'other' ? (
                                     <>
-                                        <DeleteButton onDelete={handleDelete} />
+                                        <DeleteButton
+                                            onDelete={() => setIsDialog(true)}
+                                        />
                                         <div {...provided.dragHandleProps}>
                                             <DragAndDrop />
                                         </div>
@@ -86,6 +94,21 @@ function CategoryItem({
                         <div className="w-[54px]"></div>
                     </div>
                 </div>
+            )}
+
+            {isDialog && (
+                <Dialog
+                    title="Delete the Category?"
+                    onOk={handleDelete}
+                    setIsChange={setIsChange}
+                    isDialog={isDialog}
+                    setIsDialog={setIsDialog}
+                >
+                    <p className="text-center text-text-second">
+                        All templates in the category will be moved to the
+                        category &quot;Other&quot;
+                    </p>
+                </Dialog>
             )}
 
             {/* <Draggable draggableId={category._id.toString()} index={index}>

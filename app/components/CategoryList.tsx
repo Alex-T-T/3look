@@ -1,8 +1,8 @@
 'use client';
 import { Dispatch, SetStateAction, useState } from 'react';
 import mongoose from 'mongoose';
-import { StrictModeDroppable } from '@/app/components/DroppableStrictMode';
 
+import { StrictModeDroppable } from '@/app/components/DroppableStrictMode';
 import { ICategory } from '@/app/api/categories/type';
 import CategoryItem from './CategoryItem';
 import { getAllCategories } from '../helpers/getAllCategories';
@@ -60,6 +60,7 @@ function CategoryList({
                                     onStatusChange={handleStatusChange}
                                     onDelete={handleDelete}
                                     index={index}
+                                    setIsChange={setIsChange}
                                 />
                             )
                         )}

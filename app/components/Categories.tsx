@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import mongoose from 'mongoose';
 import { DragDropContext, OnDragEndResponder } from 'react-beautiful-dnd';
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,7 +16,6 @@ import { getCategoryByQuery } from '@/app/helpers/getCategoryByQuery';
 import CreateInput from './CreateInput';
 import { ICategory } from '@/app/api//categories/type';
 import { createCategory } from '../helpers/createCategory';
-import mongoose from 'mongoose';
 import { saveChangesToDb } from '../helpers/saveChangesToDb';
 
 function Categories() {
@@ -95,7 +94,6 @@ function Categories() {
     };
 
     const handleDelete = (id: mongoose.Types.ObjectId) => {
-        console.log('handleDelete at Categories: ');
         setCategories((prev) => prev.filter((category) => category._id !== id));
 
         setDeletedCategoryIds((prev) => [...prev, id]);
