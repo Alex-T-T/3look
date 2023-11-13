@@ -8,6 +8,11 @@ const config: Config = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+                sans: ['var(--font-inter)'],
+                'sans-serif': ['var(--satoshi-regular)'],
+            },
+
             screens: {
                 mobile: '320px',
                 'mobile-l': '480px',
