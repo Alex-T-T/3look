@@ -1,10 +1,11 @@
 'use client';
 import { Dispatch, SetStateAction, useState } from 'react';
+import mongoose from 'mongoose';
+import { StrictModeDroppable } from '@/app/components/DroppableStrictMode';
+
 import { ICategory } from '@/app/api/categories/type';
 import CategoryItem from './CategoryItem';
 import { getAllCategories } from '../helpers/getAllCategories';
-import mongoose from 'mongoose';
-import { AnimatePresence, Reorder } from 'framer-motion';
 
 interface ICategoryProps {
     categories: ICategory[];
@@ -46,32 +47,27 @@ function CategoryList({
         setIsChange(true);
     };
 
-    // const filteredCategories = categories.filter(
-    //     (category) => category.name.toLowerCase() !== 'other'
-    // );
-
     return (
         <>
-            {categories ? (
-                <Reorder.Group
-                    axis="y"
-                    values={categories}
-                    onReorder={setCategories}
-                >
-                    <AnimatePresence>
-                        {categories?.map((category: ICategory) => (
-                            <CategoryItem
-                                key={category._id.toString()}
-                                category={category}
-                                onStatusChange={handleStatusChange}
-                                onDelete={handleDelete}
-                            />
-                        ))}
-                    </AnimatePresence>
-                </Reorder.Group>
-            ) : (
-                <p>Loading...</p>
-            )}
+            <StrictModeDroppable droppableId="categoryList">
+                {(provided) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                        {categories?.map(
+                            (category: ICategory, index: number) => (
+                                <CategoryItem
+                                    key={category._id.toString()}
+                                    category={category}
+                                    onStatusChange={handleStatusChange}
+                                    onDelete={handleDelete}
+                                    index={index}
+                                />
+                            )
+                        )}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </StrictModeDroppable>
+
             {isChange && (
                 <div className="mx-auto flex flex-col tablet:flex-row items-center justify-center bg-main-bg z-50 fixed bottom-5 left-0 right-0">
                     <button

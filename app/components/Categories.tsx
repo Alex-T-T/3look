@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
+import { DragDropContext, OnDragEndResponder } from 'react-beautiful-dnd';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -100,7 +102,7 @@ function Categories() {
     };
 
     const handleSaveChanges = async () => {
-        if (!updatedCategories.length && !deletedCategoryIds) {
+        if (!updatedCategories.length && !deletedCategoryIds.length) {
             toast.info('Nothing to save!');
             return;
         }
@@ -117,6 +119,25 @@ function Categories() {
         }
     };
 
+    const handleOnDragEnd: OnDragEndResponder = (result) => {
+        const { destination, source } = result;
+
+        if (!destination) return;
+
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+        ) {
+            return;
+        }
+
+        const newCategories = [...categories];
+        newCategories.splice(source.index, 1);
+        newCategories.splice(destination.index, 0, categories[source.index]);
+
+        setCategories(newCategories);
+    };
+
     return (
         <>
             <Header onSearch={handleSearch} />
@@ -129,15 +150,17 @@ function Categories() {
                     />
 
                     {categories && (
-                        <CategoryList
-                            setCategories={setCategories}
-                            categories={categories}
-                            onUpdate={handleUpdate}
-                            onDelete={handleDelete}
-                            onSave={handleSaveChanges}
-                            setUpdatedCategories={setUpdatedCategories}
-                            setDeletedCategoryIds={setDeletedCategoryIds}
-                        />
+                        <DragDropContext onDragEnd={handleOnDragEnd}>
+                            <CategoryList
+                                setCategories={setCategories}
+                                categories={categories}
+                                onUpdate={handleUpdate}
+                                onDelete={handleDelete}
+                                onSave={handleSaveChanges}
+                                setUpdatedCategories={setUpdatedCategories}
+                                setDeletedCategoryIds={setDeletedCategoryIds}
+                            />
+                        </DragDropContext>
                     )}
                     {isLoading && <p className="text-center">Loading...</p>}
                 </Container>
