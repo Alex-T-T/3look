@@ -10,7 +10,7 @@ function DeleteButton({ onDelete }: IDeleteButtonProps) {
             height="26"
             viewBox="0 0 26 26"
             fill="none"
-            className="hover:scale-125 focus:scale-125 ease-linear duration-300"
+            className="hover:scale-125 focus:scale-125 ease-linear duration-300 cursor-pointer"
             onClick={onDelete}
         >
             <path
