@@ -16,7 +16,7 @@ function CreateButton({ handleCreate }: ICreteButtonProps) {
             onClick={handleSubmit}
         >
             <FiPlus className="w-[14px] h-[14px] mr-[10px] font-[satoshi-regular]" />
-            CreateButton
+            Create a Category
         </button>
     );
 }
